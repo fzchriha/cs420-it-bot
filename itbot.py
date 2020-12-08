@@ -19,39 +19,42 @@ def Hello():
     return "Hello CS420:Software Engineering"
 @app.route("/sms", methods=['POST'])
 def sms_reply():
-    """Respond to incoming calls with a simple text message."""
+    """Respond to incoming calls with a simple text message.""" 
+    #Closing the ticket time
+    msg_received = datetime.datetime.now()
+    update = msg_received + datetime.timedelta(minutes=1) 
 
-                            
     # Fetch the message
     msg = request.form.get('Body')
     phone_number = request.form.get('From')
     resp = MessagingResponse()      
     
+    def ticket_update(message):
+        client.messages.create(to=phone_number, from_="whatsapp:+14155238886", body=message)
 
-
-    
     # Create reply
-    if msg == 'Hello':
-        resp.message("Hi I am your Felican University's IT Bot!\n Reply *Menu* to see what I can do for you.")
+    if 'hello' in msg.lower():
+        resp.message("Hi I am your Felican University's IT \U0001F916 \n Reply *Menu* to see what I can do for you.")
         return str(resp)
     
-    if msg == 'Menu':
-        resp.message("Hi I am your Felican University's IT Bot!\n\nIf you forgot your email password reply *Email*\nIf you forgot your email password reply *Webadvisor*\nIf you have problems connecting to wifi reply *Wifi*\nOtherwise please email us at helpdesk@felician.edu or call us at 201-554-0240")
+    if 'menu' in msg.lower():
+        resp.message("Hi I am your Felican University's IT \U0001F916 \n If you forgot your email password reply *Email*\nIf you forgot your email password reply *Webadvisor*\nIf you have problems connecting to wifi reply *Wifi*\nOtherwise please email us at helpdesk@felician.edu or call us at 201-554-0240")
         return str(resp)
-    if msg == 'Email':
+    if 'email' in msg.lower():
         resp.message("To reset your email password please follow the guidelines in this article\n https://felician.atlassian.net/servicedesk/customer/portal/2/article/199000077?src=-1977257468")
         return str(resp)
-    if msg == 'Webadvisor':
+    if 'webadvisor' in msg.lower():
         resp.message("To reset your Webadvisor password please follow the guidelines in this article\n https://felician.atlassian.net/servicedesk/customer/portal/2/article/199098485?src=2008668440")
         return str(resp)
-    if msg == 'Wifi':
+    if 'wifi' in msg.lower():
         resp.message("We are currently experiencing some issues with the server that affected the connectivity of the wifi, please be patient while we work on solving this problem\n Sorry for the inconvenience")
-        return str(resp) 	
-    
-    
-
-
-
+        return str(resp)
+    if 'brightspace' in msg.lower():
+        resp.message("We do not manage the Brightspace system. Please contact Ansu Mathew at MathewA@felician.edu or Rebecca DeVita at DeVitaR@felician.edu.")
+        return str(resp)
+    else:
+        resp.message("I'm sorry my bot skills are not advanced enough to help you with this issue \N{pensive face} \nPlease contact the helpdesk at helpdesk@felician.edu or call us at 201-554-0240 \n Meanwhile checkout *Menu* for what I can do \N{hugging face} !")
+        return str(resp)
 
 if __name__ == "__main__":
     app.run(debug=True)
